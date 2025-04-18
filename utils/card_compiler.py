@@ -99,12 +99,80 @@ class CardCompiler:
             """
             
         # Add word metadata for nouns
-        if word_type == "noun" and "plural_form" in word_data:
-            plural_display = f"{word_data.get('plural_article', 'die')} {word_data['plural_form']}"
+        if word_type == "noun":
             back_html += f"""
             <div class="metadata">
-                <div class="gender">{word_data.get('gender', '')}</div>
-                <div class="plural">{plural_display}</div>
+            """
+            
+            # Add gender if available
+            if "gender" in word_data:
+                back_html += f"""
+                <div class="gender">Gender: {word_data.get('gender', '')}</div>
+                """
+                
+            # Add plural form if available
+            if "plural_form" in word_data:
+                plural_article = word_data.get('plural_article', 'die')
+                plural_display = f"{plural_article} {word_data['plural_form']}"
+                back_html += f"""
+                <div class="plural">Plural: {plural_display}</div>
+                """
+            # Handle case where a noun explicitly has no plural
+            elif "has_plural" in word_data and not word_data["has_plural"]:
+                back_html += f"""
+                <div class="plural">Plural: <em>No plural form</em></div>
+                """
+                
+            back_html += """
+            </div>
+            """
+            
+        # Add verb conjugation table if available
+        if word_type == "verb" and "conjugations" in word_data:
+            back_html += f"""
+            <div class="conjugations">
+                <h4>Present Tense Conjugations</h4>
+                <table class="conjugation-table" style="width:100%; border-collapse:collapse;">
+                    <thead>
+                        <tr>
+                            <th style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">Person</th>
+                            <th style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">Conjugation</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            """
+            
+            # Add each conjugation as a row in the table
+            corrections = word_data.get("corrections", {})
+            
+            for pronoun, conjugated_form in word_data["conjugations"].items():
+                # Check if this pronoun had a correction
+                has_correction = pronoun in corrections
+                
+                if has_correction:
+                    # Show both the original and corrected form, with the corrected one in green
+                    correct_form = corrections[pronoun]
+                    back_html += f"""
+                        <tr>
+                            <td style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">{pronoun}</td>
+                            <td style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">
+                                <span style="text-decoration:line-through; color:#dc3545;">{conjugated_form}</span>
+                                <span style="color:#28a745; margin-left:5px;">→ {correct_form}</span>
+                            </td>
+                        </tr>
+                    """
+                else:
+                    # Just show the conjugation normally
+                    back_html += f"""
+                        <tr>
+                            <td style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">{pronoun}</td>
+                            <td style="text-align:left; padding:5px; border-bottom:1px solid #ddd;">{conjugated_form}</td>
+                        </tr>
+                    """
+            
+            back_html += """
+                    </tbody>
+                </table>
             </div>
             """
             

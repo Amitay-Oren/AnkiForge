@@ -27,17 +27,43 @@ WORD_TYPES = {
 
 # Gender options by language (for nouns)
 GENDER_OPTIONS = {
-    "German": ["masculine", "feminine", "neuter"],  # der, die, das
+    "German": ["der", "die", "das"],  # Use articles for UI selection
 }
 
 # Gender articles by language
+# Mapping the article choice back to the article itself for consistency
+# Also keeping original keys in case they are used elsewhere, but map them to new values too.
 GENDER_ARTICLES = {
     "German": {
-        "masculine": "der",
+        "der": "der",         # Map article to itself
+        "die": "die",         # Map article to itself
+        "das": "das",         # Map article to itself
+        "plural": "die",      # Plural article remains 'die'
+        # Keep old keys mapping to new values just in case?
+        "masculine": "der", 
         "feminine": "die",
         "neuter": "das",
-        "plural": "die"
     },
+}
+
+# Verb conjugation patterns by language
+VERB_CONJUGATIONS = {
+    "German": {
+        "present": [
+            {"person": "ich", "description": "1st person singular"},
+            {"person": "du", "description": "2nd person singular"},
+            {"person": "er/sie/es", "description": "3rd person singular"},
+            {"person": "wir", "description": "1st person plural"},
+            {"person": "ihr", "description": "2nd person plural"},
+            {"person": "sie/Sie", "description": "3rd person plural / formal"}
+        ]
+        # Future expansion - add other tenses as needed
+        # "past": [...],
+        # "future": [...]
+    }
+    # Future expansion for other languages
+    # "Spanish": {...},
+    # "French": {...}
 }
 
 # Image generation settings
