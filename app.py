@@ -826,33 +826,33 @@ def main():
             if generate_image_checkbox:
                 if st.button("Generate Image", key="gen_img_btn"):
                     with st.spinner("Generating image... This may take a minute."):
-                        # Refine prompt
+                        # Refine prompt and generate image
                         prompt_refiner = resources['prompt_refiner']
                         language = st.session_state.word_data["language"]
                         refined_prompt = prompt_refiner.refine_prompt(sentence, language)
-                        
-                        # --- Store prompt for potential regeneration --- 
-                        st.session_state.image_prompt = refined_prompt 
-                        
-                        # Generate image
+                        st.session_state.image_prompt = refined_prompt
                         image_generator = resources['image_generator']
-                        # Create a unique filename
                         timestamp = int(time.time())
                         safe_word = "".join(c for c in st.session_state.word_data['word'] if c.isalnum() or c in (' ', '_')).rstrip()
                         image_filename = f"ankiforge_{safe_word}_{timestamp}.png"
-                        image_file = os.path.join(st.session_state.temp_dir, image_filename) # Use the unique filename
+                        image_file = os.path.join(st.session_state.temp_dir, image_filename)
                         image_result = image_generator.generate_image(refined_prompt, save_path=image_file)
-                        
                         if image_result["success"]:
-                            st.session_state.image_path = image_result.get("image_path") # Store the full path to the temp file
-                        
-                        # Don't move step yet, stay on step 3 to allow regeneration
-                        # st.session_state.step = 4 # REMOVED
-                        st.rerun() # Rerun to show the new image & regen options
+                            st.session_state.image_path = image_result.get("image_path")
+                            # Automatically proceed to card preview after image generation
+                            st.session_state.step = 4
+                        # After generating, show image and allow user to proceed
+                        st.rerun()
             else:
                 if st.button("Skip Image Generation", key="skip_img_btn"):
-                    st.session_state.image_path = None # Ensure no image path
-                    st.session_state.image_prompt = None # Ensure no prompt stored
+                    st.session_state.image_path = None
+                    st.session_state.image_prompt = None
+                    st.session_state.step = 4
+                    st.rerun()
+            
+            # Provide a button to continue to card preview once an image is available
+            if st.session_state.image_path:
+                if st.button("Continue to Card Preview", key="continue_to_card_preview"):
                     st.session_state.step = 4
                     st.rerun()
         
