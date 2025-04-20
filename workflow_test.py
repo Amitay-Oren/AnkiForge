@@ -2,11 +2,19 @@ import os
 import sys
 sys.path.append('/home/ubuntu')
 
-from AnkiForge.agents.word_interpreter import WordInterpreter
-from AnkiForge.agents.grammar_checker import GrammarChecker
-from AnkiForge.agents.prompt_refiner import PromptRefiner
-from AnkiForge.integrations.anki_uploader import AnkiUploader
-from AnkiForge.utils.card_compiler import CardCompiler
+# from workflow.workflow_manager import WorkflowManager # Commented out - not found and unused
+from config import Config
+# from state import State # Commented out - not found and unused
+import logging
+from agents.word_interpreter import WordInterpreter  # Removed Agent suffix
+from agents.grammar_checker import GrammarChecker  # Removed Agent suffix
+from agents.prompt_refiner import PromptRefiner  # Removed Agent suffix
+from integrations.anki_uploader import AnkiUploader
+from utils.card_compiler import CardCompiler
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 # Test the workflow with a German noun
 def test_german_noun_workflow():
@@ -27,7 +35,7 @@ def test_german_noun_workflow():
     # 2. Generate definition
     try:
         print("\nGenerating definition...")
-        interpreter = WordInterpreter()
+        interpreter = WordInterpreter() # Removed Agent suffix
         definition = interpreter.generate_definition(
             word_data["word"], 
             word_data["language"], 
@@ -45,7 +53,7 @@ def test_german_noun_workflow():
     sentence = "Der große Hund spielt im Park."
     try:
         print("\nChecking grammar...")
-        checker = GrammarChecker()
+        checker = GrammarChecker() # Removed Agent suffix
         grammar_check = checker.check_grammar(
             sentence,
             word_data["language"],
@@ -63,7 +71,7 @@ def test_german_noun_workflow():
     # 4. Refine prompt for image generation
     try:
         print("\nRefining prompt for image generation...")
-        refiner = PromptRefiner()
+        refiner = PromptRefiner() # Removed Agent suffix
         refined_prompt = refiner.refine_prompt(
             sentence,
             word_data["language"]

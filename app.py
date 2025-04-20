@@ -557,10 +557,11 @@ def main():
                                 with col2:
                                     # Regular input field (we'll apply styling via CSS)
                                     st.session_state.conjugations[pronoun] = st.text_input(
-                                        "",  # Empty label
+                                        f"Conjugation for {pronoun}",  # Added descriptive label
                                         value=st.session_state.conjugations.get(pronoun, ""),
                                         key=input_key,
-                                        placeholder=f"Conjugation for '{pronoun}'"
+                                        placeholder=f"Conjugation for '{pronoun}'",
+                                        label_visibility="collapsed" # Hide the label visually
                                     )
                                 
                                 with col3:
@@ -808,6 +809,10 @@ def main():
         elif st.session_state.step == 3:
             st.subheader("Generate an Image")
             
+            # Display generated image if available
+            if st.session_state.image_path:
+                st.image(Image.open(st.session_state.image_path), use_column_width=True)
+
             # Display the sentence (corrected if needed)
             if st.session_state.grammar_check["is_correct"]:
                 sentence = st.session_state.grammar_check.get("sentence", "")
